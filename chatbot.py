@@ -9,8 +9,8 @@ import random
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
-ssl._create_default_https_context = ssl._create_unverified_context 
-nltk.data.path.append(os.path.abspath("nltk_data")) 
+ssl._create_default_https_context = ssl._create_unverified_context
+nltk.data.path.append(os.path.abspath("nltk_data"))
 nltk.download('punkt')
 
 file_path = os.path.abspath("intents.json")
@@ -27,94 +27,77 @@ for intent in intents:
         tags.append(intent['tag'])
         patterns.append(pattern)
 
-x = vectorizer.fit_transform (patterns)
+x = vectorizer.fit_transform(patterns)
 y = tags
 clf.fit(x, y)
 
 def chatbot(input_text):
     input_text = vectorizer.transform([input_text])
-    tag = clf.predict(input_text) [0]
+    tag = clf.predict(input_text)[0]
     for intent in intents:
         if intent['tag'] == tag:
             response = random.choice(intent['responses'])
             return response
 
-counter = 0
-
 def main():
-    global counter
-    st.title("Chatbot using NLP")
+    st.set_page_config(page_title="Chatbot using NLP", page_icon="🤖")
 
-    menu = ["Home", "Conversation History", "About"]
-    choice = st.sidebar.selectbox("Menu", menu)
+    col1, col2, col3 = st.columns([1, 3, 1])
+    with col2:
+        nav = st.radio("", options=["**💬 Chat**", "**📂 Chat History**", "**💡 About**"], horizontal=True)
 
-    if choice == "Home":
-        st.write("Welcome to the chatbot. Please type a message and press Enter to start the chat.")
+    st.markdown("<h1 style='text-align: center;'>🤖 Chatbot using Natural Language Processing</h1>", unsafe_allow_html=True)
 
+    if nav == "**💬 Chat**":
+        st.markdown("<h2 style='text-align: center;'>✨ Let's Chat!</h2>", unsafe_allow_html=True)
+        st.write("Type your message below to interact with the chatbot.")
+        
         if not os.path.exists('chat_log.csv'):
             with open('chat_log.csv', 'w', newline='', encoding='utf-8') as csvfile:
                 csv_writer = csv.writer(csvfile)
                 csv_writer.writerow(['User Input', 'Chatbot Response', 'Timestamp'])
 
-        counter += 1
-        user_input = st.text_input("You:", key=f"user_input_{counter}")
+        user_input = st.text_input("**Your Message:**", placeholder="Type something here...", help="Enter your message.")
 
         if user_input:
-
-            user_input_str = str(user_input)
-
             response = chatbot(user_input)
-            st.text_area("Chatbot:", value=response, height=120, max_chars=None, key=f"chatbot_response_{counter}")
+            st.markdown(f"**🤖 Bot:** {response}")
 
-            timestamp = datetime.datetime.now().strftime(f"%d-%m-%Y %H:%M:%S")
-
+            timestamp = datetime.datetime.now().strftime("%d-%m-%y %H:%M:%S")
             with open('chat_log.csv', 'a', newline='', encoding='utf-8') as csvfile:
                 csv_writer = csv.writer(csvfile)
-                csv_writer.writerow([user_input_str, response, timestamp])
+                csv_writer.writerow([user_input, response, timestamp])
 
             if response.lower() in ['goodbye', 'bye']:
-                st.write("Thank you for chatting with me. Have a great day!")
+                st.success("Thank you for chatting! Have a great day!")
                 st.stop()
 
-    elif choice == "Conversation History":
-        st.header("Conversation History")
-        with st.expander("Click to see Conversation History"):
-            with open('chat_log.csv', 'r', encoding='utf-8') as csvfile:
-                csv_reader = csv.reader(csvfile)
-                next(csv_reader)
-                for row in csv_reader:
-                    st.text(f"User: {row[0]}")
-                    st.text(f"Chatbot: {row[1]}")
-                    st.text(f"Timestamp: {row[2]}")
-                    st.markdown("---")
+    elif nav == "**📂 Chat History**":
+        st.markdown("<h2 style='text-align: center;'>📂 Chat History</h2>", unsafe_allow_html=True)
+        st.write("Review your past conversations below:")
 
-    elif choice == "About":
-        st.write("The goal of this project is to create a chatbot that can understand and respond to user input using Natural Language Processing (NLP) techniques.")
+        if os.path.exists('chat_log.csv'):
+            with st.expander("View Chat History"):
+                with open('chat_log.csv', 'r', encoding='utf-8') as csvfile:
+                    csv_reader = csv.reader(csvfile)
+                    next(csv_reader)
+                    for row in csv_reader:
+                        st.markdown(f"**🧑‍💻 You:** {row[0]}")
+                        st.markdown(f"**🤖 Bot:** {row[1]}")
+                        st.caption(f"🕒 Timestamp: {row[2]}")
+                        st.markdown("---")
+        else:
+            st.warning("No chat history available.")
 
-        st.subheader("**Project Overview:**")
+    elif nav == "**💡 About**":
+        st.markdown("<h2 style='text-align: center;'>💡 About This Chatbot</h2>", unsafe_allow_html=True)
+        st.write("""This chatbot uses advanced NLP techniques and Machine Learning to provide meaningful responses to user inputs. The interface is designed for ease of use and professional interaction.""")
 
-        st.write("""
-        The project is divided into two parts:
-        1. NLP techniques and Logistic Regression algorithm is used to train the chatbot on labelled intents.
-        2. For building the Chatbot interface, Streamlit web framework is used to build a web-based interactive chatbot.
-        """)
+        st.markdown("### 🚀 Features")
+        st.write("""- **Dynamic Conversations**: Enjoy seamless interactions. - **Chat History**: Review past conversations for reference. - **Responsive UI**: A professional and user-friendly layout.""")
 
-        st.subheader("**Dataset:**")
-
-        st.write("""
-        The dataset used in this project is a collection of labelled intents and entities. The dataset consists of:
-        - **Intents**: The intent of the user input (e.g. "greeting", "budget", "about")
-        - **Entities**: The entities extracted from user input (e.g. "Hi", "How do I create a budget?")
-        - **Text**: The user input text.
-        """)
-
-        st.subheader("**Streamlit Chatbot Interface:**")
-
-        st.write("The chatbot interface is built using Streamlit. The interface includes a text input for user messages and displays chatbot responses interactively.")
-
-        st.subheader("**Conclusion:**")
-
-        st.write("In this project, a chatbot is built that can understand and respond to user inputs using NLP techniques and Logistic Regression. The interactive interface built with Streamlit makes the chatbot user-friendly and accessible.")
+        st.markdown("### 🛠️ Technical Details")
+        st.write("""1. **Text Vectorization**: User input is processed with `TfidfVectorizer`. 2. **Intent Classification**: Logistic Regression identifies user intent. 3. **Response Selection**: Predefined responses are chosen based on intent.""")
 
 if __name__ == '__main__':
     main()
