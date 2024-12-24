@@ -2,10 +2,10 @@ import os
 import json
 import ssl
 import nltk
-import datetime
-import csv
-import streamlit as st
 import random
+import csv
+import datetime
+import streamlit as st
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
@@ -13,7 +13,7 @@ ssl._create_default_https_context = ssl._create_unverified_context
 nltk.data.path.append(os.path.abspath("nltk_data"))
 nltk.download('punkt')
 
-file_path = os.path.abspath("intents.json")
+file_path = "intents.json"
 with open(file_path, 'r') as file:
     intents = json.load(file)
 
@@ -42,23 +42,39 @@ def chatbot(input_text):
 def main():
     st.set_page_config(page_title="Chatbot using NLP", page_icon="🤖")
 
-    st.sidebar.markdown("### Select Theme:")
+    if "selected_button" not in st.session_state:
+        st.session_state.selected_button = "💬 Chat"
 
+    st.sidebar.markdown("### Select Theme:")
     if st.sidebar.button("🔆 Light Theme"):
         st.markdown('<meta http-equiv="refresh" content="0; URL=\'?embed_options=light_theme\'">', unsafe_allow_html=True)
         st.stop()
-
     if st.sidebar.button("🌑 Dark Theme"):
         st.markdown('<meta http-equiv="refresh" content="0; URL=\'?embed_options=dark_theme\'">', unsafe_allow_html=True)
         st.stop()
 
-    col1, col2, col3 = st.columns([1, 3, 1])
+    st.sidebar.markdown("### 📞 Contact:")
+    st.sidebar.write("🔗 Connect with me on [LinkedIn](https://www.linkedin.com/in/tejas-davekar/)! ", unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        chat_button = st.button("💬 Chat")
     with col2:
-        nav = st.radio("", options=["**💬 Chat**", "**📂 Chat History**", "**💡 About**"], horizontal=True)
+        history_button = st.button("📂 Chat History")
+    with col3:
+        about_button = st.button("💡 About")
+
+    if chat_button:
+        st.session_state.selected_button = "💬 Chat"
+    elif history_button:
+        st.session_state.selected_button = "📂 Chat History"
+    elif about_button:
+        st.session_state.selected_button = "💡 About"
 
     st.markdown("<h1 style='text-align: center;'>🤖 Chatbot using Natural Language Processing</h1>", unsafe_allow_html=True)
 
-    if nav == "**💬 Chat**":
+    if st.session_state.selected_button == "💬 Chat":
         st.markdown("<h2 style='text-align: center;'>✨ Let's Chat!</h2>", unsafe_allow_html=True)
         st.write("Type your message below to interact with the chatbot.")
 
@@ -82,7 +98,7 @@ def main():
                 st.success("Thank you for chatting! Have a great day!")
                 st.stop()
 
-    elif nav == "**📂 Chat History**":
+    elif st.session_state.selected_button == "📂 Chat History":
         st.markdown("<h2 style='text-align: center;'>📂 Chat History</h2>", unsafe_allow_html=True)
         st.write("Review your past conversations below:")
 
@@ -99,7 +115,7 @@ def main():
         else:
             st.warning("No chat history available.")
 
-    elif nav == "**💡 About**":
+    elif st.session_state.selected_button == "💡 About":
         st.markdown("<h2 style='text-align: center;'>💡 About This Chatbot</h2>", unsafe_allow_html=True)
         st.write("""This chatbot uses advanced NLP techniques and Machine Learning to provide meaningful responses to user inputs. The interface is designed for ease of use and professional interaction.""")
 
@@ -114,7 +130,7 @@ def main():
         st.write("""3. **Response Selection**: Predefined responses are chosen based on intent.""")
 
         st.markdown("### 📞 Contact")
-        st.write( """🔗 Connect with me on [LinkedIn](https://www.linkedin.com/in/tejas-davekar/)!""",unsafe_allow_html=True)
+        st.write( """🔗 Connect with me on [LinkedIn](https://www.linkedin.com/in/tejas-davekar/)!""", unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
