@@ -44,11 +44,11 @@ def main():
 
     st.sidebar.markdown("### Select Theme:")
 
-    if st.sidebar.button("Light Theme"):
+    if st.sidebar.button("🔆 Light Theme"):
         st.markdown('<meta http-equiv="refresh" content="0; URL=\'?embed_options=light_theme\'">', unsafe_allow_html=True)
         st.stop()
 
-    if st.sidebar.button("Dark Theme"):
+    if st.sidebar.button("🌑 Dark Theme"):
         st.markdown('<meta http-equiv="refresh" content="0; URL=\'?embed_options=dark_theme\'">', unsafe_allow_html=True)
         st.stop()
 
@@ -104,10 +104,17 @@ def main():
         st.write("""This chatbot uses advanced NLP techniques and Machine Learning to provide meaningful responses to user inputs. The interface is designed for ease of use and professional interaction.""")
 
         st.markdown("### 🚀 Features")
-        st.write("""- **Dynamic Conversations**: Enjoy seamless interactions. - **Chat History**: Review past conversations for reference. - **Responsive UI**: A professional and user-friendly layout.""")
+        st.write("""- **Dynamic Conversations**: Enjoy seamless interactions.""")
+        st.write("""- **Chat History**: Review past conversations for reference.""")
+        st.write("""- **Responsive UI**: A professional and user-friendly layout.""")
 
-        st.markdown("### 🛠️ Technical Details")
-        st.write("""1. **Text Vectorization**: User input is processed with `TfidfVectorizer`. 2. **Intent Classification**: Logistic Regression identifies user intent. 3. **Response Selection**: Predefined responses are chosen based on intent.""")
+        st.markdown("### 🛠 Technical Details")
+        st.write("""1. **Text Vectorization**: User input is processed with `TfidfVectorizer`.""")
+        st.write("""2. **Intent Classification**: Logistic Regression identifies user intent.""")
+        st.write("""3. **Response Selection**: Predefined responses are chosen based on intent.""")
+
+        st.markdown("### 📞 Contact")
+        st.write( """🔗 Connect with me on [LinkedIn](https://www.linkedin.com/in/tejas-davekar/)!""",unsafe_allow_html=True)
 
 if __name__ == '__main__':
     main()
