@@ -9,14 +9,17 @@ import random
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
+# Bypass SSL verification
 ssl._create_default_https_context = ssl._create_unverified_context
 nltk.data.path.append(os.path.abspath("nltk_data"))
 nltk.download('punkt')
 
+# Load intents.json
 file_path = os.path.abspath("intents.json")
 with open(file_path, 'r') as file:
     intents = json.load(file)
 
+# Train ML model
 vectorizer = TfidfVectorizer()
 clf = LogisticRegression(random_state=0, max_iter=10000)
 
@@ -40,8 +43,22 @@ def chatbot(input_text):
             return response
 
 def main():
+    # Set page configuration
     st.set_page_config(page_title="Chatbot using NLP", page_icon="🤖")
 
+    st.sidebar.markdown("### Select Theme:")
+
+    if st.sidebar.button("Light Theme"):
+        # Redirect to Light Theme URL
+        st.markdown('<meta http-equiv="refresh" content="0; URL=\'?embed_options=light_theme\'">', unsafe_allow_html=True)
+        st.stop()
+
+    if st.sidebar.button("Dark Theme"):
+        # Redirect to Dark Theme URL
+        st.markdown('<meta http-equiv="refresh" content="0; URL=\'?embed_options=dark_theme\'">', unsafe_allow_html=True)
+        st.stop()
+
+    # Navigation bar
     col1, col2, col3 = st.columns([1, 3, 1])
     with col2:
         nav = st.radio("", options=["**💬 Chat**", "**📂 Chat History**", "**💡 About**"], horizontal=True)
@@ -51,7 +68,7 @@ def main():
     if nav == "**💬 Chat**":
         st.markdown("<h2 style='text-align: center;'>✨ Let's Chat!</h2>", unsafe_allow_html=True)
         st.write("Type your message below to interact with the chatbot.")
-        
+
         if not os.path.exists('chat_log.csv'):
             with open('chat_log.csv', 'w', newline='', encoding='utf-8') as csvfile:
                 csv_writer = csv.writer(csvfile)
