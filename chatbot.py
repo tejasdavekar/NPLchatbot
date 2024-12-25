@@ -45,30 +45,33 @@ def main():
     if "selected_button" not in st.session_state:
         st.session_state.selected_button = "💬 Chat"
 
-    st.sidebar.markdown("### Select Theme:")
+    st.sidebar.markdown("### 🎨 Select Theme:")
     if st.sidebar.button("🔆 Light Theme"):
         st.markdown('<meta http-equiv="refresh" content="0; URL=\'?embed_options=light_theme\'">', unsafe_allow_html=True)
         st.stop()
     if st.sidebar.button("🌑 Dark Theme"):
         st.markdown('<meta http-equiv="refresh" content="0; URL=\'?embed_options=dark_theme\'">', unsafe_allow_html=True)
         st.stop()
+    st.sidebar.markdown("---")
 
     st.sidebar.markdown("### 📞 Contact:")
-    st.sidebar.write("🔗 Connect with me on [LinkedIn](https://www.linkedin.com/in/tejas-davekar/)! ", unsafe_allow_html=True)
+    st.sidebar.write("🔗 Connect with me on [`LinkedIn`](https://www.linkedin.com/in/tejas-davekar/)! ", unsafe_allow_html=True)
+    st.sidebar.write("🔗 Contact me on [`email`](mailto:tejasdavekar@outlook.in)! ", unsafe_allow_html=True)
+    st.sidebar.write("🔗 View my [`Resume`](https://drive.google.com/file/d/1CCkjom-CQDOUs-moAuXwSMKL_IidckQ8/view)! ", unsafe_allow_html=True)
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4, col5 = st.columns(5)
 
     with col1:
         chat_button = st.button("💬 Chat")
-    with col2:
-        history_button = st.button("📂 Chat History")
     with col3:
+        history_button = st.button("📂 History")
+    with col5:
         about_button = st.button("💡 About")
 
     if chat_button:
         st.session_state.selected_button = "💬 Chat"
     elif history_button:
-        st.session_state.selected_button = "📂 Chat History"
+        st.session_state.selected_button = "📂 History"
     elif about_button:
         st.session_state.selected_button = "💡 About"
 
@@ -83,7 +86,7 @@ def main():
                 csv_writer = csv.writer(csvfile)
                 csv_writer.writerow(['User Input', 'Chatbot Response', 'Timestamp'])
 
-        user_input = st.text_input("**Your Message:**", placeholder="Type something here...", help="Enter your message.")
+        user_input = st.text_input("**Your Message:**", placeholder="Type something here...", help="Type your message and tap `Enter`.")
 
         if user_input:
             response = chatbot(user_input)
@@ -98,7 +101,7 @@ def main():
                 st.success("Thank you for chatting! Have a great day!")
                 st.stop()
 
-    elif st.session_state.selected_button == "📂 Chat History":
+    elif st.session_state.selected_button == "📂 History":
         st.markdown("<h2 style='text-align: center;'>📂 Chat History</h2>", unsafe_allow_html=True)
         st.write("Review your past conversations below:")
 
@@ -112,8 +115,6 @@ def main():
                         st.markdown(f"**🤖 Bot:** {row[1]}")
                         st.caption(f"🕒 Timestamp: {row[2]}")
                         st.markdown("---")
-        else:
-            st.warning("No chat history available.")
 
     elif st.session_state.selected_button == "💡 About":
         st.markdown("<h2 style='text-align: center;'>💡 About This Chatbot</h2>", unsafe_allow_html=True)
