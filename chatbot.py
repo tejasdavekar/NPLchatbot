@@ -2,13 +2,13 @@ import os
 import json
 import csv
 import random
+import datetime
 import streamlit as st
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 
 FILE_PATH = "intents.json"
 CHAT_LOG_FILE = 'chat_log.csv'
-MAX_ITER = 10000
 STATE_CHAT = "💬 Chat"
 STATE_HISTORY = "📂 History"
 STATE_ABOUT = "💡 About"
@@ -19,7 +19,7 @@ def load_data(file_path):
 
 def train_model(intents):
     vectorizer = TfidfVectorizer()
-    clf = LogisticRegression(random_state=0, max_iter=MAX_ITER)
+    clf = LogisticRegression(random_state=0, max_iter=1000)
 
     tags = []
     patterns = []
